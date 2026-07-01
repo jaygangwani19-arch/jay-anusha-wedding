@@ -1,1 +1,1 @@
-# jay-anusha-wadding
+# jay-anusha-wedding
