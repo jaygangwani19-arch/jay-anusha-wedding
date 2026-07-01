@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
         :root {
             --bg-color: #Fdfbf9;
@@ -173,14 +175,14 @@
             justify-content: center;
         }
 
-        .hero-subtitle { font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+        .hero-subtitle { font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; color: #888; }
         .hero-title { font-family: var(--font-head); font-size: 4rem; font-weight: 400; line-height: 1.1; margin-bottom: 20px; margin-top: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
 
-        /* Scratch & Reveal Section */
-        .scratch-section { background-color: #fff; padding: 100px 20px; }
+        /* Tap & Reveal Section */
+        .reveal-section { background-color: #fff; padding: 100px 20px; }
         .section-header { font-family: var(--font-head); font-size: 3rem; color: var(--text-dark); margin-bottom: 20px; font-weight: 400; }
         
-        .scratch-container {
+        .reveal-container {
             position: relative;
             width: 320px;
             height: 160px;
@@ -195,23 +197,67 @@
         }
         .hidden-date h3 { font-family: var(--font-head); font-size: 2.2rem; color: var(--text-dark); margin-bottom: 5px; }
         .hidden-date p { font-size: 0.85rem; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
-        #scratch-canvas { position: absolute; top: 0; left: 0; z-index: 2; cursor: pointer; border-radius: 8px; }
-
-        /* Parallax Photo Banners */
-        .photo-banner {
-            height: 60vh;
-            width: 100%;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+        
+        #tap-cover { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer; border-radius: 8px; 
+            background-color: var(--accent);
+            display: flex; justify-content: center; align-items: center;
+            color: #fff; font-family: var(--font-body); font-weight: 300; font-size: 14px; letter-spacing: 3px;
+            transition: opacity 0.6s ease;
         }
-        .banner-1 { background-image: url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1920&q=80'); }
-        .banner-2 { background-image: url('https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1920&q=80'); }
+        #tap-cover.revealed {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Our Gallery Section */
+        .gallery-section {
+            background-color: #fcf9f5;
+            padding: 80px 0; /* Full width for slider */
+        }
+        .gallery-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Hide scrollbar for clean look */
+        .gallery-slider::-webkit-scrollbar { display: none; }
+        .gallery-slider { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .gallery-item {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 380px;
+            border-radius: 12px;
+            object-fit: cover;
+            scroll-snap-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Map Section */
+        .map-section {
+            background-color: #fff;
+        }
+        .map-container {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            border: 2px solid #f0e9df;
+        }
 
         /* The Program Section */
         .timeline { max-width: 500px; width: 100%; text-align: left; margin-top: 40px; }
-        .timeline-item { display: flex; margin-bottom: 50px; align-items: flex-start; }
+        .timeline-item { display: flex; margin-bottom: 50px; align-items: flex-start; justify-content: center;}
         .timeline-date { width: 100px; font-size: 0.85rem; font-weight: 500; color: var(--accent); text-align: right; padding-right: 20px; line-height: 1.4; }
         .timeline-icon { width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--accent); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin-right: 20px; background: #fff; flex-shrink: 0; }
         .timeline-content h4 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 5px; font-weight: 400; }
@@ -219,7 +265,7 @@
 
         /* The Details Section */
         .details-section { background-color: #f7f4f0; }
-        .details-box { max-width: 500px; margin: 0 auto 40px; background: #fff; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 8px; border-top: 3px solid var(--accent); }
+        .details-box { max-width: 500px; width: 100%; margin: 0 auto 40px; background: #fff; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 8px; border-top: 3px solid var(--accent); }
         .details-box h4 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 15px; color: var(--accent); font-weight: 400; }
         .details-box p { font-size: 0.9rem; line-height: 1.8; color: #555; margin-bottom: 15px; }
 
@@ -255,48 +301,39 @@
 
     <section class="hero scale-in">
         <div class="fade-up">
-            <p class="hero-subtitle">The Gangwani & Lalwani Family</p>
-            <p class="hero-subtitle" style="font-size: 0.65rem; margin-bottom: 20px;">joyfully invites you to the wedding celebration of</p>
+            <p class="hero-subtitle" style="color: #fff;">The Gangwani & Lalwani Family</p>
+            <p class="hero-subtitle" style="font-size: 0.65rem; margin-bottom: 20px; color: rgba(255,255,255,0.8);">joyfully invites you to the wedding celebration of</p>
             <h1 class="hero-title">Jay<br>&<br>Anusha</h1>
         </div>
     </section>
 
-    <section class="scratch-section">
+    <section class="reveal-section">
         <p class="hero-subtitle fade-up" style="color: var(--accent); margin-bottom: 10px;">The Big Day</p>
-        <h2 class="section-header fade-up">Scratch to Reveal</h2>
-        <div class="scratch-container fade-up">
+        <h2 class="section-header fade-up">Tap to Reveal</h2>
+        <div class="reveal-container fade-up">
             <div class="hidden-date">
                 <h3>January 18</h3>
                 <p>Wedding Day</p>
             </div>
-            <canvas id="scratch-canvas" width="320" height="160"></canvas>
+            <div id="tap-cover">TAP TO REVEAL</div>
         </div>
     </section>
 
-    <div class="photo-banner banner-1 scale-in"></div>
+    <section class="gallery-section">
+        <p class="hero-subtitle fade-up">Captured Moments</p>
+        <h2 class="section-header fade-up" style="font-style: italic; color: var(--accent); margin-bottom: 10px;">Our Gallery</h2>
+        <p class="fade-up" style="font-size: 0.8rem; color: #888; margin-bottom: 30px;">Swipe to view</p>
+        
+        <div class="gallery-slider fade-up">
+            <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 1" class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 2" class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 3" class="gallery-item">
+        </div>
+    </section>
 
     <section>
         <h2 class="section-header fade-up">The Itinerary</h2>
         <div class="timeline">
-            
-            <div class="timeline-item fade-up">
-                <div class="timeline-date">Jan 17<br>10:00 AM</div>
-                <div class="timeline-icon">🌺</div>
-                <div class="timeline-content">
-                    <h4>Haldi</h4>
-                    <p>Kick off the celebrations with vibrant colors, music, and traditional blessings.</p>
-                </div>
-            </div>
-
-            <div class="timeline-item fade-up">
-                <div class="timeline-date">Jan 17<br>6:00 PM</div>
-                <div class="timeline-icon">✨</div>
-                <div class="timeline-content">
-                    <h4>Sangeet</h4>
-                    <p>An evening of dance performances, music, and dinner. Bring your dancing shoes!</p>
-                </div>
-            </div>
-
             <div class="timeline-item fade-up">
                 <div class="timeline-date">Jan 18<br>7:00 PM</div>
                 <div class="timeline-icon">💍</div>
@@ -305,18 +342,25 @@
                     <p>The traditional Phere and wedding rituals, followed by a grand reception dinner.</p>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <div class="photo-banner banner-2 scale-in"></div>
+    <section class="map-section">
+        <p class="hero-subtitle fade-up">We are uniting at</p>
+        <h2 class="section-header fade-up" style="font-style: italic; color: var(--accent); margin-bottom: 10px;">Club Babylon</h2>
+        <p class="fade-up" style="color: #666; font-size: 0.9rem;">Pack your bags and join us for the celebration!</p>
+        
+        <div class="map-container fade-up">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.366228308431!2d72.4849880153835!3d23.083652884920286!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9ccb2cc70827%3A0xc6e4ffcf9d6df993!2sClub%20Babylon!5e0!3m2!1sen!2sus!4v1680000000000!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
 
     <section class="details-section">
         <h2 class="section-header fade-up" style="margin-bottom: 50px;">Details</h2>
         
         <div class="details-box fade-up">
             <h4>Venue Address</h4>
-            <p><strong>The Grand Gardens Palace</strong><br>123 Celebration Boulevard<br>New Delhi, 110001</p>
+            <p><strong>Club Babylon</strong><br>Road, Sardar Patel Ring Rd,<br>near Science City Road, Sola, Bhadaj,<br>Ahmedabad, Gujarat 380060, India</p>
             <p><em>All events will take place at this venue across the beautiful lawns and banquet halls.</em></p>
         </div>
 
@@ -331,7 +375,7 @@
     <section class="rsvp-section">
         <div class="fade-up">
             <h2 class="rsvp-huge">RSVP</h2>
-            <p class="hero-subtitle" style="margin-bottom: 30px;">Kindly respond by December 15</p>
+            <p class="hero-subtitle" style="margin-bottom: 30px; color: rgba(255,255,255,0.8);">Kindly respond by December 15</p>
             <a href="#" class="btn">Confirm Attendance</a>
             <p style="margin-top: 40px; font-family: var(--font-head); font-style: italic; font-size: 1.8rem; color: var(--accent);">Thank you</p>
         </div>
@@ -348,41 +392,25 @@
             }, 1500);
         }
 
-        // --- 2. SCRATCH CARD LOGIC ---
-        const canvas = document.getElementById('scratch-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = '#B89C72'; // Elegant gold color
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.font = '300 14px Montserrat';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.letterSpacing = '3px';
-        ctx.fillText('SCRATCH ME', canvas.width / 2, canvas.height / 2 + 5);
-
-        let isDrawing = false;
-        const scratch = (e) => {
-            if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        // --- 2. TAP TO REVEAL & CONFETTI LOGIC ---
+        const tapCover = document.getElementById('tap-cover');
+        tapCover.addEventListener('click', (e) => {
+            tapCover.classList.add('revealed');
             
-            const x = clientX - rect.left;
-            const y = clientY - rect.top;
+            // Trigger the party bomb / confetti effect
+            const rect = tapCover.getBoundingClientRect();
+            // Calculate relative position for the confetti origin
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
 
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 25, 0, Math.PI * 2);
-            ctx.fill();
-        };
-
-        canvas.addEventListener('mousedown', () => isDrawing = true);
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('mousemove', scratch);
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, {passive: false});
-        canvas.addEventListener('touchend', () => isDrawing = false);
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); scratch(e); }, {passive: false});
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { x: x, y: y },
+                colors: ['#B89C72', '#C2A78F', '#ffffff', '#2c2c2c'], // Matching theme colors
+                disableForReducedMotion: true
+            });
+        });
 
         // --- 3. ADVANCED SCROLL ANIMATIONS ---
         const animateElements = document.querySelectorAll('.fade-up, .scale-in');
