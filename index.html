@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     
+    <!-- Confetti Library for Party Bomb Effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -245,14 +246,42 @@
             background-color: #fff;
         }
         .map-container {
+            position: relative;
             width: 100%;
             max-width: 500px;
-            height: 300px;
+            height: 350px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-top: 20px;
             border: 2px solid #f0e9df;
+        }
+        
+        /* Floating "Open in Maps" Button */
+        .open-maps-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #444;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .open-maps-btn:hover {
+            background-color: #fff;
+            color: var(--accent);
+            transform: translateY(-2px);
         }
 
         /* The Program Section */
@@ -268,12 +297,6 @@
         .details-box { max-width: 500px; width: 100%; margin: 0 auto 40px; background: #fff; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 8px; border-top: 3px solid var(--accent); }
         .details-box h4 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 15px; color: var(--accent); font-weight: 400; }
         .details-box p { font-size: 0.9rem; line-height: 1.8; color: #555; margin-bottom: 15px; }
-
-        /* RSVP Section */
-        .rsvp-section { background-color: var(--text-dark); color: #fff; padding: 120px 20px; }
-        .rsvp-huge { font-family: var(--font-head); font-size: 5rem; line-height: 1; margin-bottom: 20px; }
-        .btn { display: inline-block; background: transparent; color: #fff; padding: 15px 40px; border: 1px solid #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; margin-top: 20px; }
-        .btn:hover { background: #fff; color: var(--text-dark); }
         
         @media (max-width: 600px) {
             .hero-title { font-size: 3rem; }
@@ -285,6 +308,7 @@
 </head>
 <body>
 
+    <!-- Envelope Screen -->
     <div id="envelope-screen">
         <div class="envelope-wrapper" onclick="openEnvelope()">
             <div class="envelope">
@@ -299,6 +323,7 @@
         </div>
     </div>
 
+    <!-- Hero Section -->
     <section class="hero scale-in">
         <div class="fade-up">
             <p class="hero-subtitle" style="color: #fff;">The Gangwani & Lalwani Family</p>
@@ -307,6 +332,7 @@
         </div>
     </section>
 
+    <!-- Tap to Reveal Section -->
     <section class="reveal-section">
         <p class="hero-subtitle fade-up" style="color: var(--accent); margin-bottom: 10px;">The Big Day</p>
         <h2 class="section-header fade-up">Tap to Reveal</h2>
@@ -319,18 +345,21 @@
         </div>
     </section>
 
+    <!-- Gallery Section -->
     <section class="gallery-section">
         <p class="hero-subtitle fade-up">Captured Moments</p>
         <h2 class="section-header fade-up" style="font-style: italic; color: var(--accent); margin-bottom: 10px;">Our Gallery</h2>
         <p class="fade-up" style="font-size: 0.8rem; color: #888; margin-bottom: 30px;">Swipe to view</p>
         
         <div class="gallery-slider fade-up">
+            <!-- Using placeholder images. Replace src with your actual photo URLs -->
             <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 1" class="gallery-item">
             <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 2" class="gallery-item">
             <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80" alt="Jay & Anusha 3" class="gallery-item">
         </div>
     </section>
 
+    <!-- Itinerary Section -->
     <section>
         <h2 class="section-header fade-up">The Itinerary</h2>
         <div class="timeline">
@@ -345,16 +374,24 @@
         </div>
     </section>
 
+    <!-- Map & Venue Integration Section -->
     <section class="map-section">
         <p class="hero-subtitle fade-up">We are uniting at</p>
         <h2 class="section-header fade-up" style="font-style: italic; color: var(--accent); margin-bottom: 10px;">Club Babylon</h2>
         <p class="fade-up" style="color: #666; font-size: 0.9rem;">Pack your bags and join us for the celebration!</p>
         
         <div class="map-container fade-up">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.366228308431!2d72.4849880153835!3d23.083652884920286!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9ccb2cc70827%3A0xc6e4ffcf9d6df993!2sClub%20Babylon!5e0!3m2!1sen!2sus!4v1680000000000!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <!-- Floating Open in Maps Button -->
+            <a href="https://www.google.com/maps/search/?api=1&query=Club+Babylon,+Ahmedabad,+Gujarat" target="_blank" class="open-maps-btn">
+                Open in Maps ↗
+            </a>
+            
+            <!-- Embedded Google Map targeting Club Babylon -->
+            <iframe src="https://maps.google.com/maps?q=Club%20Babylon,%20Ahmedabad,%20Gujarat&t=&z=14&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 
+    <!-- Details Section -->
     <section class="details-section">
         <h2 class="section-header fade-up" style="margin-bottom: 50px;">Details</h2>
         
@@ -367,17 +404,8 @@
         <div class="details-box fade-up">
             <h4>Contact Info</h4>
             <p>If you need any assistance finding the venue or have general questions, please reach out to our coordinators:</p>
-            <p><strong>Dipesh Gangwani (Groom's Side):</strong> +91 98765 43210</p>
-            <p><strong>Santosh Lalwani (Bride's Side):</strong> +91 98765 43211</p>
-        </div>
-    </section>
-
-    <section class="rsvp-section">
-        <div class="fade-up">
-            <h2 class="rsvp-huge">RSVP</h2>
-            <p class="hero-subtitle" style="margin-bottom: 30px; color: rgba(255,255,255,0.8);">Kindly respond by December 15</p>
-            <a href="#" class="btn">Confirm Attendance</a>
-            <p style="margin-top: 40px; font-family: var(--font-head); font-style: italic; font-size: 1.8rem; color: var(--accent);">Thank you</p>
+            <p><strong>Dipesh Gangwani (Groom's Side):</strong> +91 9227202835</p>
+            <p><strong>Santosh Lalwani (Bride's Side):</strong> +91 8128202634</p>
         </div>
     </section>
 
